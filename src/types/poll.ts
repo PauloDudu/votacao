@@ -3,6 +3,7 @@ export interface Poll {
   title: string
   slug: string
   is_open: boolean
+  creator_id: string | null
   created_at: string
 }
 

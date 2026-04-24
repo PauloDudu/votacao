@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 
 export default function Home() {
   const router = useRouter()
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState('TEMA PROXIMA WEEKLY')
   const [options, setOptions] = useState(['', '', ''])
   const [loading, setLoading] = useState(false)
 
@@ -22,6 +22,12 @@ export default function Home() {
   const removeOption = (index: number) => {
     if (options.length <= 2) return
     setOptions(options.filter((_, i) => i !== index))
+  }
+
+  const getVoterId = (): string => {
+    let id = localStorage.getItem('voter_id')
+    if (!id) { id = crypto.randomUUID(); localStorage.setItem('voter_id', id) }
+    return id
   }
 
   const createPoll = async () => {
@@ -46,7 +52,7 @@ export default function Home() {
 
     const { data: poll, error } = await supabase
       .from('polls')
-      .insert({ title: title.trim(), slug, is_open: true })
+      .insert({ title: title.trim(), slug, is_open: true, creator_id: getVoterId() })
       .select()
       .single()
 

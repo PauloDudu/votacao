@@ -16,6 +16,7 @@ export default function ResultsPage() {
   const [options, setOptions] = useState<OptionWithVotes[]>([])
   const [loading, setLoading] = useState(true)
   const [shareUrl, setShareUrl] = useState('')
+  const [unauthorized, setUnauthorized] = useState(false)
 
   const [toast, setToast] = useState(false)
 
@@ -56,6 +57,14 @@ export default function ResultsPage() {
         .single()
 
       if (!pollData) {
+        setLoading(false)
+        return
+      }
+
+      // Verificar se é o criador
+      let voterId = localStorage.getItem('voter_id')
+      if (pollData.creator_id && pollData.creator_id !== voterId) {
+        setUnauthorized(true)
         setLoading(false)
         return
       }
@@ -112,6 +121,13 @@ export default function ResultsPage() {
   const totalVotes = options.reduce((sum, o) => sum + o.vote_count, 0)
 
   if (loading) return <div className="card" style={{ textAlign: 'center', color: '#555' }}>Carregando...</div>
+  if (unauthorized) return (
+    <div className="card" style={{ textAlign: 'center' }}>
+      <p style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🔒</p>
+      <p style={{ color: '#888', marginBottom: '1rem' }}>Acesso restrito ao criador da votação.</p>
+      <button onClick={() => router.back()}>Voltar</button>
+    </div>
+  )
   if (!poll) return <div className="card" style={{ textAlign: 'center' }}><p style={{ color: '#888' }}>Votação não encontrada.</p></div>
 
   return (
