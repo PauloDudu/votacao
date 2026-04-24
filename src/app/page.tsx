@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 export default function Home() {
   const router = useRouter()
   const [title, setTitle] = useState('')
-  const [options, setOptions] = useState(['', ''])
+  const [options, setOptions] = useState(['', '', ''])
   const [loading, setLoading] = useState(false)
 
   const addOption = () => setOptions([...options, ''])
@@ -29,6 +29,19 @@ export default function Home() {
     if (!title.trim() || validOptions.length < 2) return
 
     setLoading(true)
+
+    // Manter no máximo 5 votações: apagar as mais antigas se necessário
+    const { data: existingPolls } = await supabase
+      .from('polls')
+      .select('id')
+      .order('created_at', { ascending: true })
+
+    if (existingPolls && existingPolls.length >= 5) {
+      const toDelete = existingPolls.slice(0, existingPolls.length - 4)
+      const idsToDelete = toDelete.map((p) => p.id)
+      await supabase.from('polls').delete().in('id', idsToDelete)
+    }
+
     const slug = nanoid(10)
 
     const { data: poll, error } = await supabase
@@ -55,6 +68,9 @@ export default function Home() {
 
   return (
     <div className="container">
+      <p style={{ fontSize: '0.85rem', color: '#6366f1', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+        Votação Online
+      </p>
       <h1>Criar Votação</h1>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -75,7 +91,7 @@ export default function Home() {
               onChange={(e) => updateOption(i, e.target.value)}
               aria-label={`Opção ${i + 1}`}
             />
-            {options.length > 2 && (
+            {options.length > 3 && (
               <button
                 className="btn-danger"
                 style={{ width: 'auto', padding: '0.75rem' }}

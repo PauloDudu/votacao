@@ -11,11 +11,3 @@ export interface PollOption {
   poll_id: string
   text: string
 }
-
-export interface Vote {
-  id: string
-  option_id: string
-  poll_id: string
-  voter_id: string
-  created_at: string
-}

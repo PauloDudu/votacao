@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import type { Poll, PollOption } from '@/types/poll'
 
 interface OptionWithVotes extends PollOption {
@@ -11,6 +11,7 @@ interface OptionWithVotes extends PollOption {
 
 export default function ResultsPage() {
   const { slug } = useParams<{ slug: string }>()
+  const router = useRouter()
   const [poll, setPoll] = useState<Poll | null>(null)
   const [options, setOptions] = useState<OptionWithVotes[]>([])
   const [loading, setLoading] = useState(true)
@@ -123,7 +124,26 @@ export default function ResultsPage() {
       </div>
 
       {!poll.is_open && (
-        <p style={{ color: '#dc2626', marginBottom: '1rem' }}>Votação encerrada</p>
+        <div style={{ background: '#1e1b4b', border: '1px solid #6366f1', borderRadius: '12px', padding: '1.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>
+          <p style={{ color: '#22c55e', fontSize: '0.85rem', marginBottom: '0.75rem' }}>Votação encerrada</p>
+          {options.length > 0 && totalVotes > 0 && (
+            <>
+              <p style={{ color: '#888', fontSize: '0.9rem' }}>Vencedor</p>
+              <p style={{ color: '#fff', fontSize: '1.5rem', fontWeight: 700, margin: '0.5rem 0' }}>
+                🏆 {options[0].text}
+              </p>
+              <p style={{ color: '#6366f1', fontSize: '1.1rem', fontWeight: 600 }}>
+                {options[0].vote_count} voto{options[0].vote_count !== 1 ? 's' : ''} ({totalVotes > 0 ? ((options[0].vote_count / totalVotes) * 100).toFixed(1) : 0}%)
+              </p>
+            </>
+          )}
+          {totalVotes === 0 && (
+            <p style={{ color: '#888' }}>Nenhum voto registrado</p>
+          )}
+          <button onClick={() => router.push('/')} style={{ marginTop: '1rem' }}>
+            Criar nova votação
+          </button>
+        </div>
       )}
 
       <p style={{ color: '#888', marginBottom: '1rem' }}>
