@@ -4,6 +4,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Votação',
   description: 'Crie votações e compartilhe com qualquer pessoa',
+  icons: {
+    icon: '/icon.svg',
+  },
 }
 
 export default function RootLayout({
