@@ -67,21 +67,19 @@ export default function Home() {
   }
 
   return (
-    <div className="container">
-      <p style={{ fontSize: '0.85rem', color: '#6366f1', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
-        Votação Online
-      </p>
-      <h1>Criar Votação</h1>
+    <div className="card">
+      <h1 style={{ color: '#6366f1' }}>Criar Votação</h1>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
         <input
-          placeholder="Título da votação"
+          placeholder="Qual é a pergunta?"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           aria-label="Título da votação"
+          style={{ fontSize: '1rem', padding: '0.85rem 1rem' }}
         />
 
-        <p style={{ color: '#888', fontSize: '0.9rem' }}>Opções:</p>
+        <p style={{ color: '#555', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Opções</p>
 
         {options.map((opt, i) => (
           <div key={i} style={{ display: 'flex', gap: '0.5rem' }}>
@@ -94,7 +92,7 @@ export default function Home() {
             {options.length > 3 && (
               <button
                 className="btn-danger"
-                style={{ width: 'auto', padding: '0.75rem' }}
+                style={{ width: '44px', minWidth: '44px', padding: '0' }}
                 onClick={() => removeOption(i)}
                 aria-label={`Remover opção ${i + 1}`}
               >
@@ -104,12 +102,12 @@ export default function Home() {
           </div>
         ))}
 
-        <button className="btn-secondary" onClick={addOption}>
+        <button className="btn-secondary" onClick={addOption} style={{ fontSize: '0.9rem' }}>
           + Adicionar opção
         </button>
 
-        <button onClick={createPoll} disabled={loading}>
-          {loading ? 'Criando...' : 'Criar Votação'}
+        <button onClick={createPoll} disabled={loading} style={{ padding: '0.9rem' }}>
+          {loading ? 'Criando...' : 'Criar Votação →'}
         </button>
       </div>
     </div>
